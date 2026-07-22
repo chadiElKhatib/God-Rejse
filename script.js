@@ -123,24 +123,71 @@ function startCountdown() {
   }, 1000);
 }
 
-function showFinalMessage() {
+async function showFinalMessage() {
   finalSection.classList.remove("hidden");
 
-  const finalMessage =
-    "God rejse Lina 🌸 Pas godt på jer selv og nyd jeres ferie 💗";
+  await showIntroMessage(
+  "Hej Lina... 🌸"
+);
+
+await showIntroMessage(
+  "Jeg håber, du er klar til en lille overraskelse..."
+);
+
+await showIntroMessage(
+  "Du spurgte, hvorfor jeg ikke skriver til dig..."
+);
+
+await showIntroMessage(
+  "Sandheden er, at jeg bare ventede på den rigtige måde at gøre det på 💗"
+);
 
   flyingLetters.innerHTML = "";
+  flyingLetters.classList.remove("fade-out");
+  flyingLetters.style.opacity = "1";
+  flyingLetters.style.transform = "translateY(0)";
 
-  const words = finalMessage.split(" ");
+  void flyingLetters.offsetWidth;
 
-  words.forEach(function (word, wordIndex) {
+  const finalMessage =
+    "God rejse Lina 🌸 Pas godt på jer selv og nyd jeres ferie. Og ja… nu har jeg skrevet til dig 💗";
+
+  createFlyingMessage(finalMessage);
+}
+
+async function showIntroMessage(message) {
+  flyingLetters.innerHTML = "";
+  flyingLetters.classList.remove("fade-out");
+  flyingLetters.style.opacity = "1";
+  flyingLetters.style.transform = "translateY(0)";
+
+  const introText = document.createElement("p");
+  introText.classList.add("intro-message");
+  introText.textContent = message;
+
+  flyingLetters.appendChild(introText);
+
+  await wait(2400);
+
+  flyingLetters.classList.add("fade-out");
+
+  await wait(700);
+
+  flyingLetters.innerHTML = "";
+  flyingLetters.classList.remove("fade-out");
+}
+
+function createFlyingMessage(message) {
+  flyingLetters.innerHTML = "";
+
+  const words = message.split(" ");
+  let totalLetterIndex = 0;
+
+  words.forEach(function (word) {
     const wordElement = document.createElement("span");
-
     wordElement.classList.add("word");
 
-    const letters = [...word];
-
-    letters.forEach(function (character, letterIndex) {
+    [...word].forEach(function (character) {
       const letter = document.createElement("span");
 
       letter.classList.add("letter");
@@ -156,9 +203,6 @@ function showFinalMessage() {
 
       const randomRotation =
         Math.random() * 720 - 360;
-
-      const totalLetterIndex =
-        wordIndex * 10 + letterIndex;
 
       letter.style.setProperty(
         "--start-x",
@@ -181,8 +225,16 @@ function showFinalMessage() {
       );
 
       wordElement.appendChild(letter);
+
+      totalLetterIndex++;
     });
 
     flyingLetters.appendChild(wordElement);
+  });
+}
+
+function wait(milliseconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, milliseconds);
   });
 }
